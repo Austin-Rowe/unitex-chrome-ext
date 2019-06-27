@@ -4,20 +4,7 @@
 let newName = window.prompt("Type in desired title!");
 //Get ourPrice
 let ourPrice = window.prompt("Type in our price!");
-//Link color change function
-function colorLinks(hex)
-{
-    var links = document.getElementsByTagName("a");
-    for(var i=0;i<51;i++)
-    {
-        if(links[i].href)
-        {
-            links[i].style.color = hex;  
-        }
-    }  
-};
-
-//Construct Modify();
+//Construct Modify()
 function Modify(e){
     if(e.select != null){
         e.mod();    
@@ -32,28 +19,36 @@ const elObjects = [
      {
         select: document.getElementById("summary-prices"),
         mod: function(){
-            document.getElementById("summary-prices").setAttribute('style', 'font-size: 50px;margin-bottom: 10px;');
+            document.getElementById("summary-prices").setAttribute('style', 'font-size: 50px; margin-bottom: 10px;');
         }
     },
     //Define NAME
     {
         select: document.getElementById("product-name"),
         mod: function(){
-            document.getElementById("product-name").innerHTML = newName;
+            if(newName.trim() === ''){
+                document.getElementById("product-name").setAttribute('style', 'font-size: 40px; margin-bottom: 10px; line-height: 1;');
+            } else {
+                document.getElementById("product-name").setAttribute('style', 'font-size: 40px; margin-bottom: 10px; line-height: 1;');
+                document.getElementById("product-name").innerHTML = newName;
+            }
         }
     },
     //Define ourLabel
     {
-        select: document.getElementById("product-rating-reviews"),
+        select: document.getElementById("summary-prices"),
         mod: function(){
-            document.getElementById("product-rating-reviews").innerHTML = `
-                <div style="padding-bottom: 20px; margin-bottom: 5px;">
-                    <img src=${chrome.extension.getURL('PriceLabel.jpg')} alt="United Textiles Price" style="max-width: 100%">
-                    <h1 style="font-size: 80px; margin-bottom: 30px; text-align: center; color: red;">${ourPrice}</h1>
-                    <br>
-    				<h1 style="font-size: 40px; text-align: center; font-style: italic">50% Off Rug Pad w/ Purchase</h1>
-                </div>
-                `;
+            let ourLabelElement = document.createElement('div');
+            ourLabelElement.innerHTML = `
+            <div style="padding-bottom: 20px; margin-bottom: 5px;">
+                <img src=${chrome.extension.getURL('PriceLabel.jpg')} alt="United Textiles Price" style="max-width: 100%">
+                <h1 style="font-size: 80px; margin-bottom: 30px; text-align: center; color: red; line-height: 1;">${ourPrice}</h1>
+                <br>
+                <h1 style="font-size: 40px; text-align: center; font-style: italic">50% Off Rug Pad w/ Purchase</h1>
+            </div>
+            `;
+            ourLabelElement.setAttribute('style', 'margin-top: 20px;')
+            document.getElementById("summary-prices").appendChild(ourLabelElement);
         }
     },
     //Define shopSecondary to remove unneccessary details on page
@@ -79,13 +74,6 @@ const elObjects = [
             document.getElementById("product-description-full").setAttribute('style', 'display: block; font-size: 17px;');
         }
     },
-    //Define nameStyle
-    {
-        select: document.getElementById("product-name"),
-        mod: function(){
-            document.getElementById("product-name").setAttribute('style', 'font-size: 40px; margin-bottom: 10px; line-height: 1.1;');
-        }
-    },
     //Define variant drop-down
     {
         select: document.getElementById("variant-drop-down"),
@@ -99,15 +87,17 @@ const elObjects = [
         mod: function(){
             document.getElementById("prodbar").setAttribute('style', 'display: none;');
         }
+    },
+    //Remove Ratings
+    {
+        select: document.getElementById("product-rating-reviews"),
+        mod: function(){
+            document.getElementById("product-rating-reviews").setAttribute('style', 'display: none;');
+        }
     }
 ];
 
-elObjects.map(obj => Modify(obj));
-colorLinks('#0099ff');
-
-// for(var i=0; i<elObjects.length; i++){
-//     Modify(elObjects[i]);
-// };
+elObjects.forEach(obj => Modify(obj));
 
 
 
